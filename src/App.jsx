@@ -10,21 +10,36 @@ import { useEffect, useRef, useState } from 'react'
 function App() {
   const [isOpen, setIsOpen] = useState(false)
   const [width, setWidth] = useState(0)
+  const [height, setheight] = useState(0)
   const rightSectionRef = useRef()
+  const leftSectionRef = useRef()
   useEffect(() => {
     const element = rightSectionRef.current;
+    const mobile = leftSectionRef.current;
 
-    if (!element) return;
+    if (!element && !mobile) return;
 
     const observer = new ResizeObserver((entries) => {
       const width = entries[0].contentRect.width;
       setWidth(width / 2)
     });
 
+    const observing = new ResizeObserver((entries) => {
+      const height = entries[0].borderBoxSize[0].blockSize;
+      const width = entries[0].borderBoxSize[0].inlineSize;
+      if (width < 16 * 30) {
+        setWidth(width)
+      }
+      console.log(height)
+      setheight(height)
+    });
+
     observer.observe(element);
+    observing.observe(mobile);
 
     return () => {
       observer.disconnect();
+      observing.disconnect();
     };
   }, [])
 
@@ -36,7 +51,6 @@ function App() {
   return (
     <>
       <header>
-        <nav>
           <div className="company-name">
             <img src={Icon} />
             <p>Bridge Collective</p>
@@ -44,11 +58,10 @@ function App() {
           <div className="drop-down">
             <img src={Menu} onClick={(e) => handleSideBar(e)} />
           </div>
-        </nav>
       </header>
       <div className="page-content">
         <main>
-          <section className="left-section">
+          <section className="left-section" ref={leftSectionRef}>
             <div className="wrapper">
               <h1>A classroom for every child.</h1>
               <p>
@@ -114,19 +127,25 @@ function App() {
             </section>
           </section>
         </main>
-
+        <footer>
+          <div className="copyright">
+            <p>© 2026 Bridge Collective</p>
+          </div>
+          <div className="registered">
+            <p>Registered charity 12345678</p>
+          </div>
+        </footer>
       </div>
-      <footer>
-        <div className="copyright">
-          <p>© 2026 Bridge Collective</p>
+
+      {isOpen && (
+        <div className="backdrop" style={{ "--sidebar-width": `${width}px` }}>
+
         </div>
-        <div className="registered">
-          <p>Registered charity 12345678</p>
-        </div>
-      </footer>
+        )}
 
 
-      <div className={`sidebar-${isOpen ? 'open' : 'closed'}`} style={{ "--sidebar-width": `${width}px` }}>
+
+      <div className={`sidebar-${isOpen ? 'open' : 'closed'}`} style={{ "--sidebar-width": `${width}px`, "--sidebar-height": `${height}px`}}>
         <ul>
           <li>About</li>
           <li>Our Work</li>
