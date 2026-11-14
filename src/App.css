@@ -221,7 +221,8 @@ footer {
     ul {
         list-style: none;
         padding: 0;
-        margin: 4rem;
+        margin-inline: 4rem;
+        margin-block: 4rem;
         text-align: right;
         font-size: 2.25rem;
 
@@ -236,11 +237,18 @@ footer {
     @media (width < 30rem) {
         top: 4.5rem;
         block-size: var(--sidebar-height);
+
+        display: grid;
+        place-items: center;
+
         border-block-end: 0.0625rem solid #658ac6;
         inline-size: var(--sidebar-width);
         border-inline: none;
+
         ul {
             text-align: center;
+            margin: 0;
+
             li {
                 padding: 0;
             }
